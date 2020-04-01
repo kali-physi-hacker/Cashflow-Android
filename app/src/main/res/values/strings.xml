@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">CashFlow</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_savings">Savings</string>
+    <string name="menu_expense">Expense</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+    <!-- Welcome Walkthrough -->
+    <string name="welcome_one_heading">Automatic Cash Growth</string>
+    <string name="welcome_one_subtext">Save money with us and watch \nyour money grow</string>
+    <string name="welcome_two_heading">Think Cash</string>
+    <string name="welcome_two_subtext">We are careful about trends \narising in money</string>
+    <string name="welcome_three_heading">Investment</string>
+    <string name="welcome_three_subtext">Allocate money to expect increase in \nmoney in future</string>
+
+    <string name="next">Next &gt;</string>
+    <string name="previous"> &lt; Previous</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="intro_back_btn">Back</string>
+</resources>

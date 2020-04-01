@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/welcome_walkthrough"
+    app:startDestination="@id/welcomeOne">
+
+    <fragment
+        android:id="@+id/welcomeOne"
+        android:name="com.example.cashflow.WelcomeOne"
+        android:label="fragment_welcome_one"
+        tools:layout="@layout/fragment_welcome_one" >
+        <action
+            android:id="@+id/action_welcomeOne_to_welcomeThree"
+            app:destination="@id/welcomeThree"
+            app:enterAnim="@anim/slide_from_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/welcomeTwo"
+        android:name="com.example.cashflow.WelcomeTwo"
+        android:label="fragment_welcome_two"
+        tools:layout="@layout/fragment_welcome_two">
+        <action
+            android:id="@+id/action_welcomeTwo_to_welcome_Three"
+            app:destination="@+id/welcomeThree"
+            app:enterAnim="@anim/slide_from_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_from_right"
+            app:popExitAnim="@anim/slide_from_left" />
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/welcomeThree"
+        android:name="com.example.cashflow.WelcomeThree"
+        android:label="fragment_welcome_three"
+        tools:layout="@layout/fragment_welcome_three" >
+        <action
+            android:id="@+id/action_welcomeThree_to_welcomeTwo"
+            app:destination="@id/welcomeTwo" />
+    </fragment>
+</navigation>
