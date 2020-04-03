@@ -1,16 +1,13 @@
 package com.example.cashflow.ui.savings;
 
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,6 +16,8 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.android.volley.Request;
@@ -27,10 +26,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.cashflow.AddSavings;
+import com.example.cashflow.MainActivity;
 import com.example.cashflow.R;
-import com.example.cashflow.SavingsModel;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,13 +41,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 
 public class SavingsFragment extends Fragment {
 
     private View root;
     // private static String URL = "http://192.168.100.50:8000/susu/savingsEntry/api/"; <----- Office Local Ip Address
-     private static String URL = "http://192.168.43.188:8000/susu/savingsEntry/api/";
+    private static String URL = "http://192.168.43.188:8000/susu/savingsEntry/api/";
     SimpleDateFormat date = new SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.getDefault());
 
     private SavingsViewModel savingsViewModel;
@@ -55,7 +57,7 @@ public class SavingsFragment extends Fragment {
     private JSONArray savings = new JSONArray();
     private ProgressDialog loading;
 
-    private TextView daily, weekly, monthly;
+    private TextView daily, weekly, monthly, total, savingsAccountName;
 
     private String[] months = {
             "January", "February", "March", "April", "May", "June",
@@ -63,6 +65,7 @@ public class SavingsFragment extends Fragment {
     };
 
     private Button savingsCalendarBtnOne, savingsCalendarBtnTwo, savingsCalendarBtnThree;
+    private FloatingActionButton addBtn;
 
     TextView dateTextView;
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -75,6 +78,8 @@ public class SavingsFragment extends Fragment {
         daily = root.findViewById(R.id.daily_total);
         weekly = root.findViewById(R.id.weekly_total);
         monthly = root.findViewById(R.id.monthly_total);
+        total = root.findViewById(R.id.grand_total);
+        savingsAccountName = root.findViewById(R.id.savings_account_name);
 
         savingsCalendarBtnOne = root.findViewById(R.id.savings_calendar_button_one);
         savingsCalendarBtnTwo = root.findViewById(R.id.savings_calendar_button_two);
@@ -89,9 +94,18 @@ public class SavingsFragment extends Fragment {
 
         savingsCalendarView = root.findViewById(R.id.savings_calendar);
         savingsCalendarView.setUseThreeLetterAbbreviation(true);
-        savingsCalendarView.setEventIndicatorStyle(1);
+        // savingsCalendarView.setEventIndicatorStyle(1);
         dateTextView = root.findViewById(R.id.date_text_view);
         updateDisplayInformation(dateTextView);
+
+        addBtn = Objects.requireNonNull(getActivity()).findViewById(R.id.action_button);
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addSavings = new Intent(getContext(), AddSavings.class);
+                startActivity(addSavings);
+            }
+        });
 
         initializeBtns();
 
@@ -103,12 +117,16 @@ public class SavingsFragment extends Fragment {
 
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
-                String monthName = months[firstDayOfNewMonth.getMonth()];
+                int monthNumber = firstDayOfNewMonth.getMonth();
+                String monthName = months[monthNumber];
                 Calendar currCal = Calendar.getInstance();
                 currCal.setTime(firstDayOfNewMonth);
                 int year = currCal.get(Calendar.YEAR);
                 String dateText = monthName + " " + year;
                 dateTextView.setText(dateText);
+                savingsCalendarBtnTwo.setText(monthName);
+                Log.d("Last Current Month: ", "" + monthNumber);
+                swapButtons(monthNumber);
             }
         });
 
@@ -194,11 +212,27 @@ public class SavingsFragment extends Fragment {
         savingsCalendarBtnThree.setText(nextMonthName);
     }
 
-    private void swapButtons(View view) {
+    private void swapButtons(int monthNumber) {
+        int firstMonthNumber = monthNumber - 1;
+        if (firstMonthNumber < 0) {
+            firstMonthNumber = months.length - (-1*firstMonthNumber);
+        }
 
+        int lastMonthNumber = monthNumber + 1;
+        if (lastMonthNumber < 0) {
+            lastMonthNumber = months.length - (-1*lastMonthNumber);
+        } else if (lastMonthNumber > 11) {
+            lastMonthNumber = lastMonthNumber % 12;
+        }
+
+        // savingsCalendarBtnOne.setText(months[monthNumber]);
+        savingsCalendarBtnOne.setText(months[firstMonthNumber]);
+
+        Log.d("Last Month: ", ""+lastMonthNumber);
+        savingsCalendarBtnThree.setText(months[lastMonthNumber]);
     }
 
-    private void getSavingsData(int savingsAccount, int userId) {
+    private void getSavingsData(final int savingsAccount, int userId) {
         String fullURl = URL + savingsAccount + '/' + userId + '/';
 
         JsonObjectRequest savingsRequest = new JsonObjectRequest(Request.Method.GET, fullURl, null, new Response.Listener<JSONObject>() {
@@ -209,6 +243,7 @@ public class SavingsFragment extends Fragment {
                 String weekly_total = null;
                 String monthly_total = null;
                 String yearly_total = null;
+                String accountName = null;
 
                 try {
 
@@ -216,6 +251,7 @@ public class SavingsFragment extends Fragment {
                     weekly_total = response.getString("weekly_total");
                     monthly_total = response.getString("monthly_total");
                     yearly_total = response.getString("yearly_total");
+                    accountName = response.getString("savings_account_name") + " Savings Account";
 
                 } catch (JSONException e) {
 
@@ -229,6 +265,8 @@ public class SavingsFragment extends Fragment {
                         daily.setText(weekly_total);
                         weekly.setText(monthly_total);
                         monthly.setText(yearly_total);
+                        total.setText("Total: \n" + yearly_total);
+                        savingsAccountName.setText(accountName);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
