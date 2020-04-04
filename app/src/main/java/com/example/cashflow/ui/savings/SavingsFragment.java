@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cashflow.AddSavings;
+import com.example.cashflow.CONSTANTS;
 import com.example.cashflow.MainActivity;
 import com.example.cashflow.R;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
@@ -233,7 +234,7 @@ public class SavingsFragment extends Fragment {
     }
 
     private void getSavingsData(final int savingsAccount, int userId) {
-        String fullURl = URL + savingsAccount + '/' + userId + '/';
+        String fullURl = CONSTANTS.URL + "/" + CONSTANTS.savings_account_uuid;
 
         JsonObjectRequest savingsRequest = new JsonObjectRequest(Request.Method.GET, fullURl, null, new Response.Listener<JSONObject>() {
             @Override
