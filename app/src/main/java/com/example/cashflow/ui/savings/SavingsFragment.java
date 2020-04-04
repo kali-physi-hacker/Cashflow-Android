@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -41,7 +42,9 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -234,7 +237,7 @@ public class SavingsFragment extends Fragment {
     }
 
     private void getSavingsData(final int savingsAccount, int userId) {
-        String fullURl = CONSTANTS.URL + "/" + CONSTANTS.savings_account_uuid;
+        String fullURl = CONSTANTS.URL + CONSTANTS.savings_account_uuid;
 
         JsonObjectRequest savingsRequest = new JsonObjectRequest(Request.Method.GET, fullURl, null, new Response.Listener<JSONObject>() {
             @Override
@@ -253,6 +256,8 @@ public class SavingsFragment extends Fragment {
                     monthly_total = response.getString("monthly_total");
                     yearly_total = response.getString("yearly_total");
                     accountName = response.getString("savings_account_name") + " Savings Account";
+
+                    Log.d("Account Name", accountName);
 
                 } catch (JSONException e) {
 
@@ -281,7 +286,18 @@ public class SavingsFragment extends Fragment {
                 Log.d("Error Message", error.toString());
 
             }
-        });
+        })
+        {
+          // Passing My Headers
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap headers = new HashMap();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Token "+CONSTANTS.USER_TOKEN);
+                return headers;
+            }
+        };
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
         queue.add(savingsRequest);
