@@ -4,6 +4,7 @@ import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,7 +34,7 @@ public class AddSavings extends AppCompatActivity {
     private Button addMoneyBtn;
 
     private EditText amount;
-    private TextView dateTextView;
+    private EditText dateTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class AddSavings extends AppCompatActivity {
         setContentView(R.layout.activity_add_savings);
 
         amount = findViewById(R.id.amount_edit_text);
-        dateTextView = findViewById(R.id.for_date_text_view);
+        dateTextView = findViewById(R.id.for_date_edit_text);
 
         addMoneyBtn = findViewById(R.id.add_money_btn);
 
@@ -58,7 +59,7 @@ public class AddSavings extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                                 String date = year+"-"+(month+1)+"-"+dayOfMonth;
                                 dateTextView.setText(date);
-                                dateTextView.setTextColor(getResources().getColor(R.color.white));
+                                // dateTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
                             }
                         }, mYear, mMonth, mDay);
                 // datePickerDialog.set
@@ -83,22 +84,13 @@ public class AddSavings extends AppCompatActivity {
             final int amnt = Integer.parseInt(amount.getText().toString());
             final String date = dateTextView.getText().toString();
 
-            String fullUrl = CONSTANTS.URL + CONSTANTS.savings_account_uuid + "/";
+            String fullUrl = CONSTANTS.SAVINGS_ENTRY_URL + SharedPrefManager.getInstance(getApplicationContext()).getSharedActiveSavingsAccount() + "/";
 
-            JSONObject postparams = new JSONObject();
-
-            try {
-                postparams.put("amount", amount);
-                postparams.put("for_date", date);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, fullUrl, postparams,
-                    new Response.Listener<JSONObject>() {
+            StringRequest postRequest = new StringRequest(Request.Method.POST, fullUrl,
+                    new Response.Listener<String>() {
                         @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d("Response", response.toString());
+                        public void onResponse(String response) {
+                            Log.d("Response", response);
                         }
                     },
                     new Response.ErrorListener() {
@@ -107,26 +99,27 @@ public class AddSavings extends AppCompatActivity {
                             Log.d("Error Response", error.toString());
                         }
                     }){
-//                    @Override
-//                    protected Map<String, String> getParams() {
-//                        Map<String, String> params = new HashMap<String, String>();
-//                        params.put("for_date", date);
-//                        params.put("amount", ""+amnt);
-//                        return params;
-//                    }
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("for_date", date);
+                        params.put("amount", ""+amnt);
+                        return params;
+                    }
 
                     @Override
                     public Map<String, String> getHeaders() throws AuthFailureError {
+                        User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+
                         HashMap headers = new HashMap();
                         headers.put("Content-Type", "application/json");
-                        headers.put("Authorization", "Token "+CONSTANTS.USER_TOKEN);
+                        headers.put("Authorization", "Token "+user.getToken());
                         return headers;
                     }
 
             };
 
-            RequestQueue queues = Volley.newRequestQueue(getApplicationContext());
-            queues.add(postRequest);
+            VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(postRequest);
         }
     }
 }

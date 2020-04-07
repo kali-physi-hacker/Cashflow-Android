@@ -33,8 +33,8 @@ public class IntroActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         if (restorePrefData()) {
-            Intent mainActivity = new Intent(IntroActivity.this, MainActivity.class);
-            startActivity(mainActivity);
+            Intent loginActivity = new Intent(IntroActivity.this, Login.class);
+            startActivity(loginActivity);
             finish();
         }
 
@@ -59,11 +59,11 @@ public class IntroActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         prevBtn.setVisibility(View.INVISIBLE);
-                        nextBtn.setText(getText(R.string.next));
+                        nextBtn.setText(getText(R.string.next_text));
                         nextPage(nextBtn, 1);
                         break;
                     case 1:
-                        nextBtn.setText(getText(R.string.next));
+                        nextBtn.setText(getText(R.string.next_text));
                         prevBtn.setVisibility(View.VISIBLE);
                         prevPage(prevBtn, 0);
                         nextPage(nextBtn, 2);
@@ -73,8 +73,11 @@ public class IntroActivity extends AppCompatActivity {
                         nextBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Intent mainActivity = new Intent(IntroActivity.this, MainActivity.class);
-                                startActivity(mainActivity);
+//                                Intent mainActivity = new Intent(IntroActivity.this, MainActivity.class);
+//                                startActivity(mainActivity);
+//                                savePrefsData();
+                                Intent login = new Intent(IntroActivity.this, Login.class);
+                                startActivity(login);
                                 savePrefsData();
                             }
                         });

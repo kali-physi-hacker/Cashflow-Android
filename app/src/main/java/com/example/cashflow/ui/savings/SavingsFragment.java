@@ -31,6 +31,9 @@ import com.example.cashflow.AddSavings;
 import com.example.cashflow.CONSTANTS;
 import com.example.cashflow.MainActivity;
 import com.example.cashflow.R;
+import com.example.cashflow.SharedPrefManager;
+import com.example.cashflow.User;
+import com.example.cashflow.VolleySingleton;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -134,7 +137,7 @@ public class SavingsFragment extends Fragment {
             }
         });
 
-        getSavingsData(1, 1);
+        getSavingsData();
         return root;
 
     }
@@ -236,8 +239,8 @@ public class SavingsFragment extends Fragment {
         savingsCalendarBtnThree.setText(months[lastMonthNumber]);
     }
 
-    private void getSavingsData(final int savingsAccount, int userId) {
-        String fullURl = CONSTANTS.URL + CONSTANTS.savings_account_uuid;
+    private void getSavingsData() {
+        String fullURl = CONSTANTS.SAVINGS_ENTRY_URL + SharedPrefManager.getInstance(getContext()).getSharedActiveSavingsAccount();
 
         JsonObjectRequest savingsRequest = new JsonObjectRequest(Request.Method.GET, fullURl, null, new Response.Listener<JSONObject>() {
             @Override
@@ -293,14 +296,14 @@ public class SavingsFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap headers = new HashMap();
+                User user = SharedPrefManager.getInstance(getContext()).getUser();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Token "+CONSTANTS.USER_TOKEN);
+                headers.put("Authorization", "Token "+user.getToken());
                 return headers;
             }
         };
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        queue.add(savingsRequest);
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(savingsRequest);
 
     }
 

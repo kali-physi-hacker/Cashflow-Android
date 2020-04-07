@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
+    >
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_change_savings_account"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="@string/savings_account"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_user"/>
+
+    <item
+        android:id="@+id/action_logout"
+        android:orderInCategory="200"
+        android:title="@string/logout"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_exit"
+        />
 </menu>
