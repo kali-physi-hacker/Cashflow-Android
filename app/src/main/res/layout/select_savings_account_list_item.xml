@@ -8,12 +8,15 @@
     >
 
     <TextView
-        android:layout_margin="22sp"
+        android:background="@drawable/select_savings_account_dialog_bg"
+        android:padding="14sp"
+        android:layout_marginBottom="8sp"
+        android:layout_marginTop="8sp"
         android:gravity="center"
         android:text="Simple List Item"
         android:layout_gravity="center"
         android:id="@+id/savings_account_list_item_text_view"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 </LinearLayout>

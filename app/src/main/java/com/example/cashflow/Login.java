@@ -96,6 +96,7 @@ public class Login extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.d("Login Error", error.toString());
+                            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
                         }
                     }) {
                         @Override

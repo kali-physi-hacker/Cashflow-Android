@@ -84,42 +84,50 @@ public class AddSavings extends AppCompatActivity {
             final int amnt = Integer.parseInt(amount.getText().toString());
             final String date = dateTextView.getText().toString();
 
+            Map<String, String> params = new HashMap<>();
+            params.put("amount", ""+amnt);
+            params.put("for_date", date);
+
+            JSONObject obj = new JSONObject(params);
+
             String fullUrl = CONSTANTS.SAVINGS_ENTRY_URL + SharedPrefManager.getInstance(getApplicationContext()).getSharedActiveSavingsAccount() + "/";
 
             StringRequest postRequest = new StringRequest(Request.Method.POST, fullUrl,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Log.d("Response", response);
+                            Log.d("Response", response.toString());
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.d("Error Response", error.toString());
+                            Log.d("Information: ", date + amnt);
                         }
                     }){
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("for_date", date);
-                        params.put("amount", ""+amnt);
-                        return params;
-                    }
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("for_date", date);
+                            params.put("amount", ""+amnt);
+                            return params;
+                        }
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
 
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+                            Map<String, String> headers = new HashMap<>();
+                            headers.put("Content-Type", "application/form-data");
+                            headers.put("Authorization", "Token "+user.getToken());
+                            return headers;
+                        }
+                    };
 
-                        HashMap headers = new HashMap();
-                        headers.put("Content-Type", "application/json");
-                        headers.put("Authorization", "Token "+user.getToken());
-                        return headers;
-                    }
-
-            };
+            // Volley.newRequestQueue(this).add(postRequest);
 
             VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(postRequest);
         }
     }
 }
+

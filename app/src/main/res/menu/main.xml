@@ -5,15 +5,21 @@
     tools:context=".MainActivity"
     >
     <item
-        android:id="@+id/action_change_savings_account"
+        android:id="@+id/action_reload_savings_account"
         android:orderInCategory="100"
+        android:title="@string/reload_savings"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_update_black_24dp"/>
+    <item
+        android:id="@+id/action_change_savings_account"
+        android:orderInCategory="200"
         android:title="@string/savings_account"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_user"/>
 
     <item
         android:id="@+id/action_logout"
-        android:orderInCategory="200"
+        android:orderInCategory="300"
         android:title="@string/logout"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_exit"

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.RequiresApi;
@@ -59,7 +60,7 @@ public class SavingsFragment extends Fragment {
     SimpleDateFormat date = new SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.getDefault());
 
     private SavingsViewModel savingsViewModel;
-    private CompactCalendarView savingsCalendarView;
+    public static CompactCalendarView savingsCalendarView;
 
     private JSONArray savings = new JSONArray();
     private ProgressDialog loading;
@@ -154,7 +155,7 @@ public class SavingsFragment extends Fragment {
         Log.d("Scrolled", currentDate);
     }
 
-    private void updateCalendar(JSONArray savingsArr) {
+    public void updateCalendar(JSONArray savingsArr) {
         Log.d("Savings Array Content", "" + savingsArr.length());
         for (int i = 0; i < savingsArr.length(); i++) {
             try {
@@ -285,8 +286,10 @@ public class SavingsFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("Events status", "Error occured");
+                Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+                Log.d("Events status", CONSTANTS.SAVINGS_ENTRY_URL);
                 Log.d("Error Message", error.toString());
+                MainActivity.fa.finish();
 
             }
         })

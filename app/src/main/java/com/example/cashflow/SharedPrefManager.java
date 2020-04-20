@@ -45,11 +45,12 @@ public class SharedPrefManager {
         editor.putInt(SHARED_SAVINGS_ACCOUNT_NUMBER, savingsAccount.length());
         for (int i=0; i<savingsAccount.length(); i++) {
             for (int j=0; j<2; j++) {
-                String keyName = SHARED_BASE_SAVINGS_ACCOUNT + " NAME " + j;
-                String keyUUID = SHARED_BASE_SAVINGS_ACCOUNT + " UUID " + j;
+                String keyName = SHARED_BASE_SAVINGS_ACCOUNT + " NAME " + i;
+                String keyUUID = SHARED_BASE_SAVINGS_ACCOUNT + " UUID " + i;
                 try {
-                    JSONObject account = savingsAccount.getJSONObject(j+"");
+                    JSONObject account = savingsAccount.getJSONObject(i+"");
                     editor.putString(keyName, account.getString("name"));
+                    // Log.d(keyName, account.getString("name"));
                     editor.putString(keyUUID, account.getString("uuid"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -110,7 +111,6 @@ public class SharedPrefManager {
                     sharedPrefManager.getString(keyUUID,null));
             savingsAccounts.add(accountModel);
         }
-        Log.d("Savings AccountMod", savingsAccounts.get(0).getName());
         return savingsAccounts;
     }
 }

@@ -30,6 +30,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="intro_back_btn">Back</string>
     <string name="sign_in">Sign in</string>
+    <string name="register">Register</string>
     <string name="signin_image">Sigin Image</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
@@ -48,6 +49,7 @@
     <string name="logout">Logout</string>
     <string name="savings_account">Savings Account</string>
 
-    <string name="select_savings_account_message">Please Select An Active Savings Account From Below</string>
+    <string name="select_savings_account_message">No Active Savings Account</string>
     <string name="select_savings_account_title">Select Savings Account</string>
+    <string name="reload_savings">Reload Savings</string>
 </resources>

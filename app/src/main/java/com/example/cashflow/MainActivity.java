@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.example.cashflow.ui.savings.SavingsFragment;
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -17,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -55,14 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.action_button);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        // FloatingActionButton fab = findViewById(R.id.action_button);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -70,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         userNameTextView = headerView.findViewById(R.id.username_text);
         userNameTextView.setText(SharedPrefManager.getInstance(getApplicationContext()).getUser().getUsername());
 
-        Log.d("Username Text", userNameTextView.getText().toString());
+        // Log.d("Username Text", userNameTextView.getText().toString());
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -123,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.select_savings_account_list_item, R.id.savings_account_list_item_text_view, savingsAccountNames);
+        // Log.d("Savings Account Names", savingsAccountNames.toString());
         listView.setAdapter(arrayAdapter);
 
         dialog.show();
@@ -146,7 +143,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_change_savings_account:
                 showSelectDialog(MainActivity.this, size);
                 Log.d("Savings Account", "Changing Savings Account");
-
+                return true;
+            case R.id.action_reload_savings_account:
+                Log.d("Reload", "Reload Savings Account");
+                FragmentManager manager = getSupportFragmentManager();
+                SavingsFragment fragment = new SavingsFragment();
+                manager.beginTransaction().add(R.id.nav_host_fragment, fragment);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -155,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
 
